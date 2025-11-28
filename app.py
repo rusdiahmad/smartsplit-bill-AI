@@ -11,12 +11,16 @@ import io
 import time # Untuk mengukur latency (opsional di app.py, wajib di research_notebook)
 
 # --- 1. SETUP MODEL AI ---
-# Gunakan MODEL yang sudah Anda pilih di Tahap 1.
-# Pastikan Anda sudah menginstal library yang diperlukan di requirements.txt
+
+# Definisikan variabel global sebelum blok try (Solusi NameError)
+PROCESSOR = None
+MODEL = None
+DEVICE = "cpu"
+
 try:
-    # Contoh setup Donut (Ganti dengan model pilihan Anda)
     @st.cache_resource
     def load_ai_model():
+        # ... (Logika pemuatan model Anda, contoh Donut) ...
         model_name = "naver-clova-ix/donut-base-finetuned-cord-v2"
         processor = DonutProcessor.from_pretrained(model_name)
         model = VisionEncoderDecoderModel.from_pretrained(model_name)
@@ -27,9 +31,9 @@ try:
     PROCESSOR, MODEL, DEVICE = load_ai_model()
     st.sidebar.success("Model AI siap digunakan!")
 except Exception as e:
+    # Jika gagal, MODEL dan PROCESSOR sudah diset None di awal.
     st.sidebar.error(f"Gagal memuat model AI: {e}. Pastikan dependensi diinstal.")
-
-
+    
 # --- 2. FUNGSI EKSTRAKSI DATA DARI GAMBAR ---
 def extract_data_from_image(image_file):
     """
